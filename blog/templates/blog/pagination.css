@@ -1,0 +1,30 @@
+/* pagination */
+.pagination { 
+    margin:40px 0; 
+    font-weight:bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.pagination a {
+    padding: 10px 16px;
+    background: #ff5c00;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+.pagination a:hover {
+    background: #e65100;
+}
+
+.pagination span {
+    padding: 10px 16px;
+    background: #eee;
+    border-radius: 6px;
+    font-weight: bold;
+}

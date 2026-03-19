@@ -1,0 +1,121 @@
+{% extends "blog/base.html" %}
+{% load static %}
+{% block style%}
+    * {margin: 0;padding: 0;box-sizing: border-box;}
+
+    body {font-family: 'Rajdhani', sans-serif; background: linear-gradient(to right, #f8f5f0, #efe8dd);min-height: 100vh;}
+
+    header {background: #000;padding: 1rem 2rem;color: white;display: flex;justify-content: space-between;align-items: center;}
+
+    .logo {font-family:'Arial';font-size: 2rem;letter-spacing: 3px;color: #ffffff;font-weight: 800;}
+
+    header a {color: white;text-decoration: none;font-weight: 990;}
+
+    .hub{background-color: rgb(255,132,0);padding: 0.5px 7px;border-radius: 8px;color: #000;}
+
+    .container {max-width: 1200px;margin: auto;padding: 60px 20px;}
+
+    h1 {text-align: center;font-size: 40px;font-weight: 700;margin-bottom: 40px;letter-spacing: 1px;}
+
+    .toggle-wrapper {display: flex;justify-content: center;align-items: center;gap: 15px;margin-bottom: 50px;}
+
+    .toggle-label {font-weight: 500;font-size: 15px;}
+
+    .switch {position: relative;display: inline-block;width: 55px;height: 28px;}
+
+    .switch input {opacity: 0;width: 0;height: 0;}
+
+    .slider {position: absolute;cursor: pointer;inset: 0;background-color: #ccc;border-radius: 50px;transition: 0.3s;}
+
+    .slider:before {content: "";position: absolute;height: 22px;width: 22px;left: 3px;bottom: 3px;background: white;border-radius: 50%;transition: 0.3s;}
+
+    input:checked + .slider {background: #ff5c00;}
+
+    input:checked + .slider:before {transform: translateX(27px);}
+
+    .grid {display: grid;grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));gap: 35px;}
+
+    .card {background: white;padding: 30px;border-radius: 18px;box-shadow: 0 20px 40px rgba(0,0,0,0.08);transition: all 0.3s ease;position: relative;}
+
+    .card:hover {transform: translateY(-8px);box-shadow: 0 30px 55px rgba(0,0,0,0.15);}
+
+    .badge {position: absolute;top: 20px;right: 20px;padding: 5px 12px;border-radius: 50px;font-size: 12px;font-weight: 600;background: #eee;}
+
+    .badge.draft {background: #ffe5e5;color: #d80000;}
+
+    .badge.published {background: #e5fff1;color: #00994d;}
+
+    .title {font-size: 20px;font-weight: 600;margin-bottom: 5px;}
+
+    .author {color: #ff5c00;font-weight: 500;margin-bottom: 15px;}
+
+    .content {font-size: 14px;line-height: 1.7;color: #555;margin-bottom: 20px;}
+
+    .meta {font-size: 12px;color: #888;border-top: 1px solid #eee;padding-top: 10px;}
+
+    .btn {margin: 60px auto 0;padding: 15px 20px;background: black;color: white;border-radius: 50px;text-align: center;text-decoration: none;width: fit-content;font-weight: 500;transition: 0.3s;}
+
+    .btn:hover {background: #ff5c00;}
+
+    .back-btn {display: block;margin: 60px auto 0;padding: 12px 30px;background: black;color: white;border-radius: 50px;text-align: center;text-decoration: none;width: fit-content;font-weight: 500;transition: 0.3s;}
+
+    .back-btn:hover {background: #ff5c00;}
+
+{%endblock%}
+{% block content %}
+        
+    <header>
+        <div class="logo">Book<span class="hub">Hub </span></div>
+        <a href="{% url 'home' %}">🏠 Home</a>
+    </header>
+<div class="container">
+    <h1>All Books</h1>
+
+    <div class="toggle-wrapper">
+        <span class="toggle-label">Show Draft Books</span>
+        <label class="switch">
+            <input type="checkbox" id="draftToggle" 
+                {% if show_draft %}checked{% endif %}>
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="grid">
+        {% for i in posts %}
+        <div class="card">
+            {% if i.status == "DF" %}
+                <span class="badge draft">Draft</span>
+            {% else %}
+                <span class="badge published">Published</span>
+            {% endif %}
+            <div class="title">{{ i.title }}</div>
+            <div class="author">By {{ i.author }}</div>
+            <div class="content">
+                {{ i.content|truncatewords:30 }}
+            </div>
+            <div class="meta">
+                📅 Created: {{ i.created_at|date:"d M, Y" }} <br>
+                🔄 Updated: {{ i.updated_at|date:"d M , Y" }}
+                <a href="{{i.get_absolute_url}}" class="back-btn">Go To post-></a>
+            </div>
+            
+        </div>
+        {% endfor %}
+    </div>
+    {% include "blog/pagination.html"  with page=page_obj%}
+
+    <a href="{% url 'home' %}" class="back-btn">
+        ← Back to Main Menu
+    </a>
+</div>
+
+<script>
+document.getElementById("draftToggle").addEventListener("change", function() {
+    if (this.checked) {
+        window.location.href = "?draft=true";
+    } else {
+        window.location.href = "?";
+    }
+});
+</script>
+{% endblock %}
